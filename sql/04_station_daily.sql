@@ -1,0 +1,15 @@
+-- 04_station_daily.sql  (YOUR TURN)
+-- Goal: one row per station per day: station_id, ride_date, rides_out,
+-- rides_in, net_flow (= rides_in - rides_out).
+-- Big positive net_flow = bikes pile up there. Big negative = station empties out.
+-- This powers the rebalancing analysis.
+--
+-- Hints:
+--   * Departures: GROUP BY start_station_id, ride_date.
+--   * Arrivals:   GROUP BY end_station_id, DATE(ended_at).
+--   * Put each in its own CTE, then FULL OUTER JOIN them on station + date.
+--     Some stations have arrivals but no departures on a day (or the reverse),
+--     so use COALESCE(rides_out, 0) and COALESCE(station_id_a, station_id_b).
+--
+-- Stretch: add an hour-level version (station_hourly) to find rush-hour
+-- imbalances, e.g. 7-10am vs 4-7pm on weekdays.

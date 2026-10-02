@@ -1,0 +1,18 @@
+# Phase 1-2: pipeline
+pandas>=2.0
+pyarrow>=14
+requests>=2.31
+python-dotenv>=1.0
+tqdm>=4.66
+google-cloud-bigquery>=3.11
+db-dtypes>=1.2
+
+# Phase 3+: analysis (uncomment when you get there)
+# jupyter
+# matplotlib
+# statsmodels
+# prophet
+# xgboost
+# scikit-learn
+# geopandas
+# holidays

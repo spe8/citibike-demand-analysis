@@ -1,0 +1,21 @@
+# Data (too large for GitHub; re-create with the scripts in src/)
+data/
+
+# Secrets / local settings
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store

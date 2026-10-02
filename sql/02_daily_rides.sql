@@ -1,0 +1,23 @@
+-- 02_daily_rides.sql  (YOUR TURN)
+-- Goal: one row per day with ridership totals and that day's weather.
+-- This is the main table for the regression (R) and the forecast (Python).
+--
+-- Target columns:
+--   ride_date, total_rides, member_rides, casual_rides, ebike_rides,
+--   avg_duration_min, tmax_f, tmin_f, precip_in, snow_in, avg_wind_mph,
+--   is_weekend (TRUE/FALSE)
+--
+-- Hints:
+--   * Start FROM `{project}.{dataset}.trips_clean` and GROUP BY ride_date.
+--   * COUNTIF(member_casual = 'member') counts only matching rows.
+--   * rideable_type is 'electric_bike' or 'classic_bike'.
+--   * LEFT JOIN `{project}.{dataset}.weather_daily` w ON w.date = ride_date
+--     (aggregate first in a CTE, then join, so weather isn't repeated per ride).
+--   * EXTRACT(DAYOFWEEK FROM ride_date) returns 1 = Sunday ... 7 = Saturday.
+--
+-- Start with:
+-- CREATE OR REPLACE TABLE `{project}.{dataset}.daily_rides` AS
+-- ...
+--
+-- Check your work: total_rides summed over all days should equal
+-- SELECT COUNT(*) FROM trips_clean.
