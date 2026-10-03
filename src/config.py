@@ -11,13 +11,15 @@ PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 DATASET = os.getenv("BQ_DATASET", "citibike")
 LOCATION = os.getenv("BQ_LOCATION", "US")
 
-# Months to pull, inclusive, as YYYY-MM. Start small (3 months), then widen.
-START_MONTH = os.getenv("START_MONTH", "2025-01")
-END_MONTH = os.getenv("END_MONTH", "2025-03")
+# Months to pull, inclusive, as YYYY-MM. Test with a few months first, then
+# widen to the full study window: 2024-01 (before tolls) to 2025-12 (after).
+START_MONTH = os.getenv("START_MONTH", "2024-12")
+END_MONTH = os.getenv("END_MONTH", "2025-02")
 
 DATA_DIR = ROOT / "data"
 RAW_TRIPS_DIR = DATA_DIR / "raw" / "trips"
 RAW_WEATHER_DIR = DATA_DIR / "raw" / "weather"
+RAW_ZONE_DIR = DATA_DIR / "raw" / "zone"
 SQL_DIR = ROOT / "sql"
 
 # NOAA station for Central Park, NY

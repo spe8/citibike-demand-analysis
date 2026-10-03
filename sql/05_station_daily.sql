@@ -1,8 +1,8 @@
--- 04_station_daily.sql  (YOUR TURN)
+-- 05_station_daily.sql  (YOUR TURN)
 -- Goal: one row per station per day: station_id, ride_date, rides_out,
--- rides_in, net_flow (= rides_in - rides_out).
--- Big positive net_flow = bikes pile up there. Big negative = station empties out.
--- This powers the rebalancing analysis.
+-- rides_in, net_flow (= rides_in - rides_out), in_zone.
+-- Shows WHERE the toll changed demand: which zone stations gained the most
+-- arrivals, and whether they now fill up (big positive net_flow) at rush hour.
 --
 -- Hints:
 --   * Departures: GROUP BY start_station_id, ride_date.
@@ -10,6 +10,6 @@
 --   * Put each in its own CTE, then FULL OUTER JOIN them on station + date.
 --     Some stations have arrivals but no departures on a day (or the reverse),
 --     so use COALESCE(rides_out, 0) and COALESCE(station_id_a, station_id_b).
+--   * Join zone_stations to add in_zone.
 --
--- Stretch: add an hour-level version (station_hourly) to find rush-hour
--- imbalances, e.g. 7-10am vs 4-7pm on weekdays.
+-- Stretch: an hourly version (station_hourly) for weekday 7-10am vs 4-7pm.

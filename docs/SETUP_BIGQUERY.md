@@ -15,7 +15,7 @@ Sandbox limits, and how this project handles them:
 
 | Limit | What it means here |
 |---|---|
-| 10 GB storage | About one full year of trips. Start with 3 months. |
+| 10 GB storage | Two years of trips fits (about 5-6 GB) because the raw tables keep only the columns we need and `trips_clean` is a view, not a copy. |
 | 1 TB of queries per month | Plenty. `run_sql.py` prints GB scanned per query so you can track it. |
 | Tables expire after 60 days | The pipeline is re-runnable: just run it again. To remove this, add a billing account later (you stay in the free tier and aren't charged under the limits). |
 | No DELETE / UPDATE / INSERT | That's why each month loads into its own table and SQL uses `CREATE OR REPLACE TABLE`. |
@@ -25,10 +25,14 @@ Sandbox limits, and how this project handles them:
 In Terminal:
 
 ```bash
-brew install --cask google-cloud-sdk
+# Download the macOS installer from https://cloud.google.com/sdk/docs/install
+# (Apple Silicon for M1-M4 Macs, x86_64 for Intel), then:
+cd ~/Downloads
+tar -xf google-cloud-cli-*.tar.gz
+./google-cloud-sdk/install.sh
 ```
 
-No Homebrew? Use the installer from <https://cloud.google.com/sdk/docs/install>.
+Say yes to updating your PATH, then close and reopen Terminal. (With Homebrew: `brew install --cask google-cloud-sdk`.)
 
 ## 4. Log in so Python can use your account
 
@@ -51,7 +55,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-(Or with conda: `conda create -n citibike python=3.11` then `conda activate citibike` and the same `pip install`.)
+(Or with conda: `conda create -n citibike python=3.11 -y`, `conda activate citibike`, then the same `pip install`.)
 
 ## 6. Fill in your settings
 

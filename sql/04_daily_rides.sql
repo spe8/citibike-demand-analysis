@@ -1,0 +1,29 @@
+-- 04_daily_rides.sql  (YOUR TURN)
+-- Goal: the main analysis table. One row per day per trip group, with weather.
+--
+-- Trip groups (based on 03_zone_stations):
+--   'into_zone'   start outside the zone, end inside   <- most likely to replace a car trip into the zone
+--   'out_of_zone' start inside, end outside
+--   'within_zone' start and end inside
+--   'outside'     start and end outside                <- comparison (control) group
+--
+-- Target columns:
+--   ride_date, trip_group, rides, member_rides, casual_rides, ebike_rides,
+--   avg_duration_min, is_post_toll, is_weekend,
+--   tmax_f, tmin_f, precip_in, snow_in, avg_wind_mph
+--
+-- Hints:
+--   * JOIN trips_clean to zone_stations TWICE: once on start_station_id
+--     (alias it zs_start), once on end_station_id (zs_end).
+--   * Build trip_group with CASE WHEN on zs_start.in_zone and zs_end.in_zone.
+--   * GROUP BY ride_date, trip_group. COUNTIF(member_casual = 'member') etc.
+--   * rideable_type is 'electric_bike' or 'classic_bike'.
+--   * Aggregate first in a CTE, then LEFT JOIN `{project}.{dataset}.weather_daily`
+--     ON date = ride_date.
+--   * EXTRACT(DAYOFWEEK FROM ride_date) returns 1 = Sunday ... 7 = Saturday.
+--
+-- Check your work: SUM(rides) across all rows should equal
+-- SELECT COUNT(*) FROM trips_clean (minus any trips at stations missing a zone label).
+--
+-- First look at the answer: compare the into_zone share of all rides in
+-- Jan-Jun 2024 vs Jan-Jun 2025. Same months each year, so seasons cancel out.

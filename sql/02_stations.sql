@@ -1,0 +1,25 @@
+-- 02_stations.sql  (YOUR TURN)
+-- Goal: one row per station across the whole study period:
+--   station_id, station_name, lat, lng, trip_endpoints, first_month, last_month
+-- Used for the toll-zone labels (03), the Tableau map, and knowing which
+-- stations opened or closed during the study (important for a fair comparison).
+--
+-- Source: `{project}.{dataset}.raw_stations_*` (one table per month, built by
+-- load_to_bigquery.py). Inside a wildcard query, _TABLE_SUFFIX gives you the
+-- month, e.g. '202501'.
+--
+-- Hints:
+--   * Use the name from the most recent month the station appears in:
+--       ARRAY_AGG(station_name ORDER BY _TABLE_SUFFIX DESC LIMIT 1)[OFFSET(0)]
+--   * Weight coordinates by activity:
+--       SUM(lat * trip_endpoints) / SUM(trip_endpoints)
+--   * MIN(_TABLE_SUFFIX) / MAX(_TABLE_SUFFIX) give first and last month seen.
+--   * GROUP BY station_id.
+--
+-- Start with:
+-- CREATE OR REPLACE TABLE `{project}.{dataset}.stations` AS
+-- ...
+--
+-- Check your work: station_id should be unique.
+--   SELECT station_id, COUNT(*) FROM ... GROUP BY 1 HAVING COUNT(*) > 1
+-- should return no rows.
