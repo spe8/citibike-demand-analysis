@@ -25,14 +25,12 @@ Sandbox limits, and how this project handles them:
 In Terminal:
 
 ```bash
-# Download the macOS installer from https://cloud.google.com/sdk/docs/install
-# (Apple Silicon for M1-M4 Macs, x86_64 for Intel), then:
-cd ~/Downloads
-tar -xf google-cloud-cli-*.tar.gz
-./google-cloud-sdk/install.sh
+curl https://sdk.cloud.google.com | bash
 ```
 
-Say yes to updating your PATH, then close and reopen Terminal. (With Homebrew: `brew install --cask google-cloud-sdk`.)
+Press Enter to accept the default install location, and say yes to updating your PATH. Then close and reopen Terminal and check it worked with `gcloud --version`.
+
+(Other install options: <https://docs.cloud.google.com/sdk/docs/install-sdk>.)
 
 ## 4. Log in so Python can use your account
 

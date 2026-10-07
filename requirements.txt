@@ -6,6 +6,7 @@ python-dotenv>=1.0
 tqdm>=4.66
 google-cloud-bigquery>=3.11
 db-dtypes>=1.2
+pandas-gbq>=0.26.1
 
 # Phase 3+: analysis (uncomment when you get there)
 # jupyter
