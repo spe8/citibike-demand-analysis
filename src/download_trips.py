@@ -15,6 +15,7 @@ import re
 import shutil
 import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -29,7 +30,22 @@ YEARLY_NAME = "{year}-citibike-tripdata.zip"
 MONTH_IN_NAME = re.compile(r"(20\d{2})[-_]?(0[1-9]|1[0-2])")
 
 
-def download_to_disk(url: str, dest: Path) -> bool:
+def download_to_disk(url: str, dest: Path, retries: int = 3) -> bool:
+    """Stream a file to disk, retrying if the connection drops partway through."""
+    for attempt in range(1, retries + 1):
+        try:
+            return _download_once(url, dest)
+        except requests.exceptions.RequestException as e:
+            if attempt == retries:
+                raise
+            wait = 30 * attempt
+            print(f"\nConnection problem ({type(e).__name__}). Retrying in {wait}s "
+                  f"(attempt {attempt + 1} of {retries})...")
+            time.sleep(wait)
+    return False
+
+
+def _download_once(url: str, dest: Path) -> bool:
     """Stream a file to disk (yearly zips are several GB, too big for memory)."""
     with requests.get(url, stream=True, timeout=60) as resp:
         if resp.status_code != 200:
