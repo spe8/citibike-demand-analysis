@@ -71,7 +71,15 @@ All columns from `raw_trips_*` plus the derived fields below. Cleaning rules are
 
 ## `stations`
 
-TODO
+One row per station across Jan 2024 – Dec 2025. Built by `sql/02_stations.sql` from `raw_stations_*`. **Rows:** 2499 (`station_id` verified unique).
+
+| Column | Type | Description |
+| --- | --- | ---|
+| station_id | STRING | Station ID (unique) |
+| station_name | STRING | Name from the most recent month the station appears |
+| lat, lng | FLOAT | Station coordinates: monthly averages weighted by trip count |
+| trip_endpoints | INTEGER | Total trips that started or ended at the station, 2024-2025 |
+| first_month / last_month | STRING | First and last month (YYYYMM) the station appears; flags stations that opened or closed during the study |
 
 ## `crz_boundary`
 

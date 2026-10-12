@@ -66,8 +66,8 @@ Months are set by `START_MONTH` / `END_MONTH` in `.env`. The full study window i
 
 ## Progress
 
-- [ ] **Phase 1: Pipeline test.** Load Dec 2024 - Feb 2025 (3 months around the toll start), confirm `trips_clean` works
-- [ ] **Phase 2: Full data.** Widen to 2024-01 - 2025-12; build `stations`; start the data dictionary
+- [x] **Phase 1: Pipeline test.** Load Dec 2024 - Feb 2025 (3 months around the toll start), confirm `trips_clean` works
+- [x] **Phase 2: Full data.** Widen to 2024-01 - 2025-12; build `stations`; start the data dictionary
 - [ ] **Phase 3: Toll zone (GIS).** Get the zone boundary as GeoJSON (search data.ny.gov for the MTA's Central Business District geofence; or draw Manhattan below 60th St at geojson.io and document that), save to `data/raw/zone/`, run `python src/load_to_bigquery.py zone`, build `zone_stations`
 - [ ] **Phase 4: Analysis tables.** `daily_rides` by trip group; `station_daily`; first 2024 vs. 2025 comparison
 - [ ] **Phase 5: Statistics (R).** Difference-in-differences regression with weather and calendar controls; check pre-toll trends are parallel; repeat main model in SAS
