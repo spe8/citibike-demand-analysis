@@ -56,7 +56,18 @@ All columns from `raw_trips_*` plus the derived fields below. Cleaning rules are
 | duration_min | FLOAT | Ride length in minutes |
 | is_post_toll | BOOL | TRUE if the ride started on or after Jan 5, 2025 (congestion pricing start) |
 
-**Rows removed by cleaning:** TODO: record counts for each rule (raw rows, missing fields, duration outliers, final rows).
+**Rows removed by cleaning (Jan 2024 - Dec 2025):**
+
+| Step | Rows |
+|---|---|
+| Raw rows loaded | 90060645 |
+| Missing start or end time | 0 |
+| Missing start or end station | 283466 |
+| Under 1 minute | 919 |
+| over 24 hours | 19321 |
+| **Final rows in 'trips_clean'** | 89775789 |
+
+
 
 ## `stations`
 
