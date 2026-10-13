@@ -108,7 +108,35 @@ Note: some stations appear under two IDs after being renumbered (e.g. 3 Ave & E 
 
 ## `daily_rides`
 
-TODO
+One row per day per trip group, Jan 2024 – Dec 2025, with that day's weather. Main analysis table. Built by `sql/04_daily_rides.sql` from `trips_clean`, `zone_stations` (joined twice: start and end station), and `weather_daily`. **Rows:** 2,924 (731 days × 4 groups).
+
+**Trip groups** (using the `in_zone` label, 50 m rule):
+
+| trip_group | Start station | End station | Role in analysis |
+|---|---|---|---|
+| `into_zone` | outside zone | inside zone | Treatment group: trips most likely to replace a car trip into the zone |
+| `out_of_zone` | inside zone | outside zone | Return trips |
+| `within_zone` | inside zone | inside zone | Trips within lower Manhattan |
+| `outside` | outside zone | outside zone | Comparison (control) group |
+
+| Column | Type | Description |
+|---|---|---|
+| ride_date | DATE | Calendar day |
+| trip_group | STRING | One of the four groups above |
+| rides | INTEGER | Total trips in this group on this day |
+| member_rides | INTEGER | Trips by annual members |
+| casual_rides | INTEGER | Trips by casual riders (single ride / day pass) |
+| ebike_rides | INTEGER | Trips on electric bikes (`rideable_type = 'electric_bike'`) |
+| avg_duration_min | FLOAT | Average trip length in minutes |
+| is_post_toll | BOOL | TRUE on/after Jan 5, 2025 (congestion pricing start) |
+| is_weekend | BOOL | TRUE on Saturday or Sunday |
+| tmax_f / tmin_f | FLOAT | Daily high / low temperature (°F), Central Park |
+| precip_in | FLOAT | Precipitation (inches) |
+| snow_in | FLOAT | Snowfall (inches) |
+| avg_wind_mph | FLOAT | Average wind speed (mph) |
+
+Trips whose start or end station is missing from `zone_stations` are excluded by the inner joins (a small number of stations with no coordinates).
+
 
 ## `station_daily`
 

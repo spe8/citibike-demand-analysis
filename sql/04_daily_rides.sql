@@ -1,29 +1,34 @@
--- 04_daily_rides.sql  (YOUR TURN)
--- Goal: the main analysis table. One row per day per trip group, with weather.
---
--- Trip groups (based on 03_zone_stations):
---   'into_zone'   start outside the zone, end inside   <- most likely to replace a car trip into the zone
---   'out_of_zone' start inside, end outside
---   'within_zone' start and end inside
---   'outside'     start and end outside                <- comparison (control) group
---
--- Target columns:
---   ride_date, trip_group, rides, member_rides, casual_rides, ebike_rides,
---   avg_duration_min, is_post_toll, is_weekend,
---   tmax_f, tmin_f, precip_in, snow_in, avg_wind_mph
---
--- Hints:
---   * JOIN trips_clean to zone_stations TWICE: once on start_station_id
---     (alias it zs_start), once on end_station_id (zs_end).
---   * Build trip_group with CASE WHEN on zs_start.in_zone and zs_end.in_zone.
---   * GROUP BY ride_date, trip_group. COUNTIF(member_casual = 'member') etc.
---   * rideable_type is 'electric_bike' or 'classic_bike'.
---   * Aggregate first in a CTE, then LEFT JOIN `{project}.{dataset}.weather_daily`
---     ON date = ride_date.
---   * EXTRACT(DAYOFWEEK FROM ride_date) returns 1 = Sunday ... 7 = Saturday.
---
--- Check your work: SUM(rides) across all rows should equal
--- SELECT COUNT(*) FROM trips_clean (minus any trips at stations missing a zone label).
---
--- First look at the answer: compare the into_zone share of all rides in
--- Jan-Jun 2024 vs Jan-Jun 2025. Same months each year, so seasons cancel out.
+CREATE OR REPLACE TABLE `{project}.{dataset}.daily_rides` AS
+WITH daily AS (
+  SELECT
+    t.ride_date,
+    CASE
+      WHEN NOT zs_start.in_zone AND zs_end.in_zone THEN 'into_zone'
+      WHEN zs_start.in_zone AND NOT zs_end.in_zone THEN 'out_of_zone'
+      WHEN zs_start.in_zone AND zs_end.in_zone THEN 'within_zone'
+      ELSE 'outside'
+    END AS trip_group,
+    COUNT(*) AS rides,
+    COUNTIF(t.member_casual = 'member') AS member_rides,
+    COUNTIF(t.member_casual = 'casual') AS casual_rides,
+    COUNTIF(t.rideable_type = 'electric_bike') AS ebike_rides,
+    ROUND(AVG(t.duration_min), 2) AS avg_duration_min
+  FROM `{project}.{dataset}.trips_clean` AS t
+  JOIN `{project}.{dataset}.zone_stations` AS zs_start
+    ON t.start_station_id = zs_start.station_id
+  JOIN `{project}.{dataset}.zone_stations` AS zs_end
+    ON t.end_station_id = zs_end.station_id
+  GROUP BY ride_date, trip_group
+)
+SELECT
+  d.*,
+  d.ride_date >= DATE '2025-01-05' AS is_post_toll,
+  EXTRACT(DAYOFWEEK FROM d.ride_date) IN (1, 7) AS is_weekend,
+  w.tmax_f,
+  w.tmin_f,
+  w.precip_in,
+  w.snow_in,
+  w.avg_wind_mph
+FROM daily AS d
+LEFT JOIN `{project}.{dataset}.weather_daily` AS w
+  ON w.date = d.ride_date;
