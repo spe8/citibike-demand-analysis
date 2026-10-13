@@ -1,25 +1,14 @@
--- 03_zone_stations.sql  (YOUR TURN: this is the GIS step)
--- Goal: label every station as inside or outside the congestion relief zone
--- (Manhattan at or below 60th Street).
---   station_id, in_zone (TRUE/FALSE), borough (optional stretch)
---
--- Before this works you need the zone polygon loaded into BigQuery as
--- `crz_boundary` (see README, Phase 3). It stores the shape as GeoJSON text.
---
--- BigQuery has built-in geography (GIS) functions:
---   ST_GEOGFROMGEOJSON(geojson)   turns the stored text into a shape
---   ST_GEOGPOINT(lng, lat)        makes a point (note: longitude first!)
---   ST_CONTAINS(shape, point)     TRUE if the point is inside the shape
---
--- Hints:
---   * CROSS JOIN stations with crz_boundary (it's only one row).
---   * If the zone comes as several shapes, use LOGICAL_OR(ST_CONTAINS(...))
---     with GROUP BY station_id.
---
--- Start with:
--- CREATE OR REPLACE TABLE `{project}.{dataset}.zone_stations` AS
--- ...
---
--- Check your work: plot the stations in Tableau or geojson.io colored by
--- in_zone. The edge should follow 60th Street. Expect several hundred
--- stations inside the zone.
+CREATE OR REPLACE TABLE `{project}.{dataset}.zone_stations` AS
+WITH zone AS (
+  SELECT ST_UNION_AGG(ST_GEOGFROMGEOJSON(geojson, make_valid => TRUE)) AS geom
+  FROM `{project}.{dataset}.crz_boundary`
+)
+SELECT
+  s.station_id,
+  s.station_name,
+  s.lat,
+  s.lng,
+  ST_CONTAINS(z.geom, ST_GEOGPOINT(s.lng, s.lat)) AS in_zone_strict,
+  ST_DWITHIN(z.geom, ST_GEOGPOINT(s.lng, s.lat), 50) AS in_zone,
+  ROUND(ST_DISTANCE(z.geom, ST_GEOGPOINT(s.lng, s.lat))) AS meters_from_zone
+FROM `{project}.{dataset}.stations` AS s, zone AS z;
