@@ -1,6 +1,6 @@
 # Did Congestion Pricing Push New Yorkers onto Bikes?
 
-> 🚧 In progress
+> **In progress.** Data pipeline, GIS zone labeling, and initial analysis complete. Regression in R and Tableau dashboard in progress.
 
 On January 5, 2025, New York City began charging most vehicles a toll to enter Manhattan at or below 60th Street, the first congestion pricing program in the U.S. This project measures whether the toll changed how people use Citi Bike, using two years of ride records (2024 vs. 2025), NOAA weather data, and a geographic definition of the toll zone.
 
@@ -33,10 +33,10 @@ On January 5, 2025, New York City began charging most vehicles a toll to enter M
 |---|---|
 | Ingestion & storage | Python, Google BigQuery |
 | Cleaning & modeling | SQL (BigQuery), BigQuery GIS |
-| Statistics | R (difference-in-differences regression), SAS |
-| Forecasting | Python (Prophet, XGBoost) |
-| Dashboard | Tableau Public |
-| Automation | GitHub Actions |
+| Statistics | R (difference-in-differences regression), SAS *(in progress)* |
+| Forecasting | Python (Prophet, XGBoost) *(planned)* |
+| Dashboard | Tableau Public *(planned)* |
+| Automation | GitHub Actions *(planned)* |
 
 ## Repo structure
 
@@ -77,12 +77,28 @@ Months are set by `START_MONTH` / `END_MONTH` in `.env`. The full study window i
 
 ## Key findings
 
-_Coming soon._
+**Data:** 90M+ Citi Bike trips (Jan 2024 – Dec 2025), 2,499 stations, NOAA daily weather. 285K invalid trips (0.3%) removed in cleaning; see the [data dictionary](docs/data_dictionary.md).
+
+**Toll zone:** 441 stations labeled inside the congestion relief zone using BigQuery GIS, with a documented 50 m rule for stations along the excluded FDR Drive / West Side Highway and on 60th Street.
+
+**Initial results (preliminary):**
+
+| Comparison (2024 → 2025) | Into zone | Outside (comparison) | Gap |
+|---|---|---|---|
+| Jan–Jun, all stations | +2.7% | +7.9% | −5.2 pts |
+| Jan–Jun, stations open all 24 months | +0.2% | +5.3% | −5.1 pts |
+| Full year, all stations | +1.7% | +3.1% | −1.4 pts |
+
+- Station expansion does **not** explain the gap. It holds when restricted to stations that existed throughout.
+- Trips into the zone are strongly seasonal (≈11 per 100 outside trips in winter vs. ≈15 in summer), and the gap is concentrated in **Jan–Feb 2025**, which were ~5°F colder and snowier than Jan–Feb 2024. Jul–Sep 2025 were *above* 2024.
+- **So far, there is no clear sustained increase in bike trips into the zone after tolling began.** Next step: a difference-in-differences regression with weather and calendar controls to test this formally.
+
+Full notes: [reports/findings_log.md](reports/findings_log.md)
 
 ## Data
 
 - Citi Bike System Data: <https://citibikenyc.com/system-data>
 - NOAA daily summaries, Central Park (USW00094728)
-- Congestion relief zone boundary: TBD (Phase 3)
+- Congestion relief zone boundary: MTA Central Business District Geofence, data.ny.gov (dataset `srxy-5nxn`)
 
 Full column definitions: [docs/data_dictionary.md](docs/data_dictionary.md)
